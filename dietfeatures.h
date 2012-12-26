@@ -23,10 +23,10 @@
 #define SLASH_PROC_OK
 
 /* use errno_location instead of errno; NEEDED FOR MULTI-THREADING! */
-#define WANT_THREAD_SAFE
+//#define WANT_THREAD_SAFE
 
 /* support __thread; NEEDED FOR MULTI-THREADING! */
-#define WANT_TLS
+//#define WANT_TLS
 
 /* make the startcode, etc. dynamic aware ({con,de}structors) */
 /* #define WANT_DYNAMIC */
@@ -44,7 +44,7 @@
 /* on i386, Linux has an alternate syscall method since 2002/12/16 */
 /* on my Athlon XP, it is twice as fast, but it's only in kernel 2.5 */
 /* 20040118: enabling this breaks User Mode Linux!  It's their fault. */
-#define WANT_SYSENTER
+//#define WANT_SYSENTER
 
 #define WANT_LINKER_WARNINGS
 
@@ -139,7 +139,7 @@
  * compiled with -fstack-protector against it, the binary will segfault
  * when calling that code. */
 #if (__GNUC__>4) || ((__GNUC__==4) && (__GNUC_MINOR__>=1))
-#define WANT_SSP
+//#define WANT_SSP
 #endif
 
 
