@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include "dietfeatures.h"
-
+#if 0
 int lockf(int fd, int cmd, off_t len) {
   struct flock fl;
   fl.l_whence=SEEK_CUR;
@@ -36,3 +36,4 @@ int lockf(int fd, int cmd, off_t len) {
   }
   return fcntl(fd,cmd,&fl);
 }
+#endif

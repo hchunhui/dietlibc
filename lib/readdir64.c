@@ -41,7 +41,6 @@ again:
     d64.d_off=o->d_off;
     d64.d_reclen=o->d_reclen;
     strcpy(d64.d_name,o->d_name);
-    d64.d_type=0;	/* is this correct? */
     return &d64;
 #ifdef __NR_getdents64
   }

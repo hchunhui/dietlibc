@@ -1,15 +1,6 @@
 
 #include <dietfeatures.h>
-
-#ifdef WANT_SYSENTER
-.data
-.type __vsyscall,@object
-.global __vsyscall
-__vsyscall:
-.Lvsyscall:
-.long	.Lcallint80
-#endif
-
+#include <syscalls.h>
 .text
 .global __unified_syscall_256
 .type __unified_syscall_256,@function
@@ -23,36 +14,19 @@ exit:
 .global _exit
 .type	_exit,@function
 _exit:
-	movb	$1,%al
+	movb	$__NR_exit,%al
 .global __unified_syscall
 .type	__unified_syscall,@function
 __unified_syscall:
 .size _exit,__unified_syscall-_exit
 	movzbl	%al, %eax
 .L1:
-	push	%edi
-	push	%esi
 	push	%ebx
-	push	%ebp
-	movl	%esp,%edi
-	/* we use movl instead of pop because otherwise a signal would
-	   destroy the stack frame and crash the program, although it
-	   would save a few bytes. */
-	movl	5*4(%edi),%ebx
-	movl	6*4(%edi),%ecx
-	movl	7*4(%edi),%edx
-	movl	8*4(%edi),%esi
-	movl	10*4(%edi),%ebp
-	movl	9*4(%edi),%edi
-#ifdef WANT_SYSENTER
-	call	*.Lvsyscall /* 0xffffe000 */
-#else
+	movl	2*4(%esp),%ebx
+	movl	3*4(%esp),%ecx
+	movl	4*4(%esp),%edx
 	int	$0x80
-#endif
-	pop	%ebp
 	pop	%ebx
-	pop	%esi
-	pop	%edi
 	cmp	$-132,%eax
 	jb	.Lnoerror
 	neg	%eax
@@ -74,10 +48,3 @@ __error_unified_syscall:
 #include "dietuglyweaks.h"
 
 	ret
-.L3:
-.size __unified_syscall,.L3-__unified_syscall
-#ifdef WANT_SYSENTER
-.Lcallint80:
-	int	$0x80
-	ret
-#endif

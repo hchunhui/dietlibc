@@ -2,7 +2,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <utmp.h>
-
+#if 0
 static const char *utmp_file_name = _PATH_UTMP;
 static int fd = -1;
 static off_t utmp_current = 0;
@@ -106,4 +106,4 @@ void pututline(struct utmp *ut) {
   }
   unlock_record();
 }
-
+#endif

@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <string.h>
-
+#if 0
 #ifdef __linux__
 
 #include <stdlib.h>
@@ -63,4 +63,5 @@ duh:
 #endif
 }
 
+#endif
 #endif

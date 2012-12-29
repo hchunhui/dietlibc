@@ -568,6 +568,7 @@ int regcomp(regex_t*__restrict__ preg, const char*__restrict__ regex, int cflags
   t=parseregex(&preg->r,regex,preg);
   if (t==regex && *regex!=0) return -1;
   regex_putnext(&preg->r,0);
+  preg->re_nsub = preg->r.pieces;
   return 0;
 }
 

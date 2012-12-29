@@ -2,7 +2,7 @@
 #define _SYS_SYSCTL_H_
 
 #include <sys/types.h>
-#include <linux/sysctl.h>
+//#include <linux/sysctl.h>
 
 __BEGIN_DECLS
 

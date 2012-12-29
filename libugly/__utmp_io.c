@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
-
+#if 0
 void *__utmp_io(int fd, void *ut, ssize_t len, off_t *offset, int type);
 
 /* type:  F_RDLCK or F_WRLCK */
@@ -45,3 +45,4 @@ __utmp_io(int fd, void *ut, ssize_t len, off_t *offset, int type) {
       return (void *)0;
   return ut;
 }
+#endif

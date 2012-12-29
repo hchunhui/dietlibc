@@ -1,21 +1,20 @@
 #include <unistd.h>
+#include <errno.h>
 
-extern int __libc_brk(void *end_data_segment);
+void* __curbrk=0;
 
-extern void* __curbrk;
-
+int __libc_brk(void *end_data_segment);
 void* __libc_sbrk(ptrdiff_t increment);
+
 void* __libc_sbrk(ptrdiff_t increment) {
-  void* oldbrk;
-  if (__curbrk==0)
-    if (__libc_brk(0) < 0)
-      return (void*)-1;
-  if (increment==0)
-    return __curbrk;
-  oldbrk=__curbrk;
-  if (__libc_brk((char*)oldbrk+increment)<0)
-    return (void*)-1;
-  return oldbrk;
+	if((__curbrk = __diet_sbrk(increment))==(void *)-1)
+		errno = ENOMEM;
+	return __curbrk;
+}
+
+int __libc_brk(void *end_data_segment) {
+	return __libc_sbrk(end_data_segment-__curbrk);
 }
 
 void* sbrk (ptrdiff_t increment) __attribute__((weak,alias("__libc_sbrk")));
+int brk(void *end_data_segment) __attribute__((weak,alias("__libc_brk")));

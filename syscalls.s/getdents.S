@@ -1,3 +1,3 @@
 #include "syscalls.h"
 
-syscall(getdents,getdents)
+syscall(readdir,getdents)

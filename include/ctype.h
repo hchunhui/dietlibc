@@ -28,6 +28,15 @@ extern int isxdigit(int c) __THROW __attribute__ ((__const__));
 
 extern int isgraph(int c) __THROW __attribute__ ((__const__));
 
+#define	_U	01
+#define	_L	02
+#define	_N	04
+#define	_S	010
+#define _P	020
+#define _C	040
+#define _X	0100
+#define	_B	0200
+extern const char _ctype_[1 + 256];
 __END_DECLS
 
 #endif

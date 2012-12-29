@@ -84,7 +84,7 @@ endif
 # ARCH=$(MYARCH)
 
 OBJDIR=bin-$(ARCH)
-ILIBDIR=$(LIBDIR)-$(ARCH)
+ILIBDIR=$(LIBDIR)#-$(ARCH)
 
 HOME=$(shell pwd)
 
@@ -107,7 +107,7 @@ INC=-I. -isystem include
 VPATH=lib:libstdio:libugly:libcruft:libcrypt:libshell:liblatin1:libcompat:libdl:libregex:libm:profiling
 
 SYSCALLOBJ=$(patsubst syscalls.s/%.S,$(OBJDIR)/%.o,$(wildcard syscalls.s/*.S))
-
+SYSCALLOBJ+=$(patsubst syscalls.c/%.c,$(OBJDIR)/%.o,$(wildcard syscalls.c/*.c))
 LIBOBJ=$(patsubst lib/%.c,$(OBJDIR)/%.o,$(wildcard lib/*.c))
 LIBUGLYOBJ=$(patsubst libugly/%.c,$(OBJDIR)/%.o,$(wildcard libugly/*.c))
 LIBSTDIOOBJ=$(patsubst libstdio/%.c,$(OBJDIR)/%.o,$(wildcard libstdio/*.c))
@@ -325,7 +325,8 @@ t1:
 
 install-bin: $(OBJDIR)/start.o $(OBJDIR)/dietlibc.a $(OBJDIR)/liblatin1.a $(OBJDIR)/libcompat.a $(OBJDIR)/diet-i
 	$(INSTALL) -d $(DESTDIR)$(ILIBDIR) $(DESTDIR)$(MAN1DIR) $(DESTDIR)$(BINDIR)
-	$(INSTALL) $(OBJDIR)/start.o $(DESTDIR)$(ILIBDIR)/start.o
+	$(INSTALL) -m 644 $(MYARCH)/*.ld $(DESTDIR)$(ILIBDIR)/
+	$(INSTALL) $(OBJDIR)/start.o $(DESTDIR)$(ILIBDIR)/crt0.o
 	$(INSTALL) -m 644 $(OBJDIR)/libm.a \
 $(OBJDIR)/liblatin1.a $(OBJDIR)/libcompat.a $(OBJDIR)/libcrypt.a $(DESTDIR)$(ILIBDIR)
 	$(INSTALL) -m 644 $(OBJDIR)/dietlibc.a $(DESTDIR)$(ILIBDIR)/libc.a

@@ -6,5 +6,5 @@ LIBMATH+=acos.o asin.o atan.o ceil.o cos.o exp.o exp10.o exp2.o expm1.o fabs.o f
 LIBMATH:=$(filter-out acosh.o asinh.o atanh.o cbrt.o copysign.o exp10.o exp2.o expm1.o ilogb.o log2.o,$(LIBMATH))
 #CFLAGS+=-march=i386 -Os -fomit-frame-pointer -malign-functions=0 -malign-jumps=0 -malign-loops=0 -mpreferred-stack-boundary=2
 CFLAGS+=$(M)
-VPATH:=i386:syscalls.s:$(VPATH)
+VPATH:=i386:syscalls.s:syscalls.c:$(VPATH)
 LIBGMON_OBJS+=$(OBJDIR)/mcount.o

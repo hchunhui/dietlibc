@@ -10,20 +10,6 @@
 #include "syscalls.h"
 #include "PIC.h"
 
-#ifdef WANT_SYSENTER
-.data
-.type __vsyscall,@object
-.global __vsyscall
-__vsyscall:
-.Lvsyscall:
-.long	.Lcallint80
-
-.text
-.Lcallint80:
-	int	$0x80
-	ret
-#endif
-
 /* ok now include all syscalls.s (*.S) and sysdep *.S */
 
 #include "mmap.S"
@@ -97,34 +83,18 @@ __unified_syscall:
 	push	%esi
 	push	%ebx
 	movl	%esp,%edi
-#ifdef WANT_SYSENTER
-	/* PIC-code ... */
-	pushl	%ebp
-	PIC_INIT
-	movl	.Lvsyscall@GOTOFF(%ebx),%ebp
-	pushl	%ebx
-#endif
 	movl	0x10(%edi),%ebx
 	movl	0x14(%edi),%ecx
 	movl	0x18(%edi),%edx
 	movl	0x1c(%edi),%esi
 	movl	0x20(%edi),%edi
-#ifdef WANT_SYSENTER
-	call	*%ebp
-	popl	%ebx
-	popl	%ebp
-#else
 	int	$0x80
-#endif
 	cmp	$-124,%eax
 	jbe	.Lnoerror
 	neg	%eax
 
 	/* PIC-code Ohhhhh My. */
 	push	%eax
-#ifndef WANT_SYSENTER
-	PIC_INIT
-#endif
 	call	__errno_location@PLT
 	popl	%ebx
 	movl	%ebx,(%eax)

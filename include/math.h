@@ -60,7 +60,9 @@ double log2(double d) __THROW __attribute__((__const__));
 double pow(double x, double y) __THROW __attribute__((__const__));
 
 double sqrt(double x) __THROW __attribute__((__const__));
+float sqrtf(float x) __THROW __attribute__((__const__));
 double fabs(double x) __THROW __attribute__((__const__));
+float fabsf(float x) __THROW __attribute__((__const__));
 double fmod(double x, double y) __THROW __attribute__((__const__));
 
 double floor(double x) __attribute__((__const__));
