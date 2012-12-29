@@ -3,6 +3,7 @@
 
 .text
 .global _start
+.extern _init, _fini
 _start:
 	jmp 1f
 	.byte 'X','B','I','N'
@@ -31,6 +32,11 @@ _start:
 	call	monitor
 	addl	$0x8, %esp
 #endif
+
+	call _init
+	push $_fini
+	call atexit
+	add $4, %esp
 
 #ifdef WANT_DYNAMIC
 	call	_dyn_start

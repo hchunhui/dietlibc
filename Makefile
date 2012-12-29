@@ -88,11 +88,10 @@ ILIBDIR=$(LIBDIR)#-$(ARCH)
 
 HOME=$(shell pwd)
 
-WHAT=	$(OBJDIR) $(OBJDIR)/start.o $(OBJDIR)/dyn_start.o $(OBJDIR)/dyn_stop.o \
+WHAT=	$(OBJDIR) $(OBJDIR)/start.o $(OBJDIR)/crti.o $(OBJDIR)/crtn.o $(OBJDIR)/dyn_start.o $(OBJDIR)/dyn_stop.o \
 	$(OBJDIR)/dietlibc.a $(OBJDIR)/liblatin1.a \
 	$(OBJDIR)/libcompat.a $(OBJDIR)/libm.a \
-	$(OBJDIR)/libcrypt.a \
-	$(OBJDIR)/diet $(OBJDIR)/diet-i
+	$(OBJDIR)/libcrypt.a 
 
 all: $(WHAT)
 
@@ -224,7 +223,7 @@ $(OBJDIR)/libdl.a: $(LIBDLOBJ)
 dyn_lib: $(PICODIR) $(PICODIR)/libc.so $(PICODIR)/dstart.o \
 	$(PICODIR)/dyn_so_start.o $(PICODIR)/dyn_start.o $(PICODIR)/dyn_stop.o \
 	$(PICODIR)/libdl.so $(PICODIR)/libcompat.so \
-	$(PICODIR)/libm.so $(PICODIR)/diet-dyn $(PICODIR)/diet-dyn-i
+	$(PICODIR)/libm.so
 
 $(PICODIR)/%.o: %.S $(ARCH)/syscalls.h
 	$(CROSS)$(CC) $(INC) $(CFLAGS) -fPIC -D__DYN_LIB -c $< -o $@
@@ -274,22 +273,6 @@ $(SYSCALLOBJ): syscalls.h
 VERSION=dietlibc-$(shell head -n 1 CHANGES|sed 's/://')
 CURNAME=$(notdir $(shell pwd))
 
-$(OBJDIR)/diet: $(OBJDIR)/start.o $(OBJDIR)/dyn_start.o diet.c $(OBJDIR)/dietlibc.a $(OBJDIR)/dyn_stop.o
-	$(CROSS)$(CC) -isystem include $(CFLAGS) -nostdlib -o $@ $^ -DDIETHOME=\"$(HOME)\" -DVERSION=\"$(VERSION)\" -lgcc
-	$(CROSS)strip -R .comment -R .note $@
-
-$(OBJDIR)/diet-i: $(OBJDIR)/start.o $(OBJDIR)/dyn_start.o diet.c $(OBJDIR)/dietlibc.a $(OBJDIR)/dyn_stop.o
-	$(CROSS)$(CC) -isystem include $(CFLAGS) -nostdlib -o $@ $^ -DDIETHOME=\"$(prefix)\" -DVERSION=\"$(VERSION)\" -DINSTALLVERSION -lgcc
-	$(CROSS)strip -R .comment -R .note $@
-
-$(PICODIR)/diet-dyn: $(PICODIR)/start.o $(PICODIR)/dyn_start.o diet.c
-	$(LD_UNSET) $(CROSS)$(CC) -isystem include $(CFLAGS) -fPIC -nostdlib -o $@ $^ -DDIETHOME=\"$(HOME)\" -D__DYN_LIB -DVERSION=\"$(VERSION)\" -L$(PICODIR) -lc -lgcc $(PICODIR)/dyn_stop.o -Wl,-dynamic-linker=$(HOME)/$(PICODIR)/libdl.so
-	$(CROSS)strip -R .command -R .note $@
-
-$(PICODIR)/diet-dyn-i: $(PICODIR)/start.o $(PICODIR)/dyn_start.o diet.c
-	$(LD_UNSET) $(CROSS)$(CC) -isystem include $(CFLAGS) -fPIC -nostdlib -o $@ $^ -DDIETHOME=\"$(prefix)\" -D__DYN_LIB -DVERSION=\"$(VERSION)\" -L$(PICODIR) -lc -lgcc $(PICODIR)/dyn_stop.o -Wl,-dynamic-linker=$(ILIBDIR)/libdl.so -DINSTALLVERSION
-	$(CROSS)strip -R .command -R .note $@
-
 $(OBJDIR)/djb: $(OBJDIR)/compile $(OBJDIR)/load
 
 $(OBJDIR)/compile:
@@ -323,17 +306,16 @@ t:
 t1:
 	$(CROSS)$(CC) -g -o t1 t.c
 
-install-bin: $(OBJDIR)/start.o $(OBJDIR)/dietlibc.a $(OBJDIR)/liblatin1.a $(OBJDIR)/libcompat.a $(OBJDIR)/diet-i
+install-bin: $(OBJDIR)/start.o $(OBJDIR)/crti.o $(OBJDIR)/crtn.o $(OBJDIR)/dietlibc.a $(OBJDIR)/liblatin1.a $(OBJDIR)/libcompat.a
 	$(INSTALL) -d $(DESTDIR)$(ILIBDIR) $(DESTDIR)$(MAN1DIR) $(DESTDIR)$(BINDIR)
 	$(INSTALL) -m 644 $(MYARCH)/*.ld $(DESTDIR)$(ILIBDIR)/
 	$(INSTALL) $(OBJDIR)/start.o $(DESTDIR)$(ILIBDIR)/crt0.o
+	$(INSTALL) $(OBJDIR)/crti.o $(DESTDIR)$(ILIBDIR)/crti.o
+	$(INSTALL) $(OBJDIR)/crtn.o $(DESTDIR)$(ILIBDIR)/crtn.o
 	$(INSTALL) -m 644 $(OBJDIR)/libm.a \
 $(OBJDIR)/liblatin1.a $(OBJDIR)/libcompat.a $(OBJDIR)/libcrypt.a $(DESTDIR)$(ILIBDIR)
 	$(INSTALL) -m 644 $(OBJDIR)/dietlibc.a $(DESTDIR)$(ILIBDIR)/libc.a
-ifeq ($(MYARCH),$(ARCH))
-	$(INSTALL) $(OBJDIR)/diet-i $(DESTDIR)$(BINDIR)/diet
-	-$(INSTALL) $(PICODIR)/diet-dyn-i $(DESTDIR)$(BINDIR)/diet-dyn
-endif
+	ln -sfv libc.a $(DESTDIR)$(ILIBDIR)/libg.a
 	$(INSTALL) -m 644 diet.1 $(DESTDIR)$(MAN1DIR)/diet.1
 
 install-profiling:
@@ -354,14 +336,6 @@ install-headers:
 
 
 install: install-bin install-profiling install-pic install-headers
-
-uninstall:
-	for i in start.o libm.a liblatin1.a libcompat.a libcrypt.a libc.a; do rm -f $(DESTDIR)$(ILIBDIR)/$$i; done
-	rm -f $(DESTDIR)$(BINDIR)/diet $(DESTDIR)$(BINDIR)/diet-dyn
-	for i in libgmon.a dyn_start.o dyn_stop.o libc.so libdl.so libcompat.so dyn_dstart.o dyn_dstop.o dyn_so_start.o; do rm -f $(DESTDIR)$(ILIBDIR)/$$i; done
-	rm -f $(DESTDIR)$(MAN1DIR)/diet.1 $(DESTDIR)/etc/diet.ld.conf
-	for i in `find include -name \*.h`; do rm -f $(DESTDIR)$(prefix)/$$i; done
-	-rmdir $(DESTDIR)$(ILIBDIR) $(DESTDIR)$(MAN1DIR) $(DESTDIR)$(BINDIR)
 
 .PHONY: sparc ppc mips arm alpha i386 parisc mipsel powerpc s390 sparc64
 .PHONY: x86_64 ia64 ppc64 s390x
