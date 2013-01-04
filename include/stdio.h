@@ -89,6 +89,7 @@ int fseeko_unlocked(FILE *stream, off_t offset, int whence) __THROW;
 off_t ftello(FILE *stream) __THROW;
 off_t ftello_unlocked(FILE *stream) __THROW;
 
+/*
 #if __WORDSIZE == 32
 int fseeko64(FILE *stream, loff_t offset, int whence) __THROW;
 int fseeko64_unlocked(FILE *stream, loff_t offset, int whence) __THROW;
@@ -102,6 +103,7 @@ loff_t ftello64_unlocked(FILE *stream) __THROW;
 #endif
 
 #endif
+*/
 
 void rewind(FILE *stream) __THROW;
 int fgetpos(FILE *stream, fpos_t *pos) __THROW;

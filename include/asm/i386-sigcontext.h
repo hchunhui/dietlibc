@@ -36,10 +36,10 @@ struct _fpstate {
 	struct _xmmreg	_xmm[8];
 	unsigned long	padding[56];
 };
-
+#ifdef __dietlibc__
 #define X86_FXSR_MAGIC		0x0000
 #define PC(ctx) (ctx.eip)
-
+#endif
 struct sigcontext {
 	__u16         gs, __gsh;
 	__u16         fs, __fsh;
