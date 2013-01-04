@@ -32,7 +32,7 @@
 /* #define WANT_DYNAMIC */
 
 /* GDB support in the dynamic linker */
-#define WANT_LD_SO_GDB_SUPPORT
+//#define WANT_LD_SO_GDB_SUPPORT
 
 /* do you want smaller or faster string routines? */
 #define WANT_FASTER_STRING_ROUTINES
@@ -54,7 +54,7 @@
 
 /* do you want localtime(3) to read /etc/localtime?
  * Needed for daylight saving time etc. */
-#define WANT_TZFILE_PARSER
+//#define WANT_TZFILE_PARSER
 
 /* do you want the DNS routines to parse and use "domain" and "search"
  * lines from /etc/resolv.conf?  Normally not used on boot floppies and

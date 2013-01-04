@@ -106,8 +106,8 @@ INC=-I. -isystem include
 VPATH=lib:libstdio:libugly:libcruft:libcrypt:libshell:liblatin1:libcompat:libdl:libregex:libm:profiling
 
 SYSCALLOBJ=$(patsubst syscalls.s/%.S,$(OBJDIR)/%.o,$(wildcard syscalls.s/*.S))
-SYSCALLOBJ+=$(patsubst syscalls.c/%.c,$(OBJDIR)/%.o,$(wildcard syscalls.c/*.c))
 LIBOBJ=$(patsubst lib/%.c,$(OBJDIR)/%.o,$(wildcard lib/*.c))
+LIBOBJ+=$(patsubst syscalls.c/%.c,$(OBJDIR)/%.o,$(wildcard syscalls.c/*.c))
 LIBUGLYOBJ=$(patsubst libugly/%.c,$(OBJDIR)/%.o,$(wildcard libugly/*.c))
 LIBSTDIOOBJ=$(patsubst libstdio/%.c,$(OBJDIR)/%.o,$(wildcard libstdio/*.c))
 LIBCRUFTOBJ=$(patsubst libcruft/%.c,$(OBJDIR)/%.o,$(wildcard libcruft/*.c))

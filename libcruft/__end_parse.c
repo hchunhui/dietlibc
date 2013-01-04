@@ -5,6 +5,6 @@
 #include "parselib.h"
 
 void __end_parse(struct state* s) {
-  munmap((void*)(s->buffirst),s->buflen);
+  //munmap((void*)(s->buffirst),s->buflen);
   s->buffirst=0;
 }

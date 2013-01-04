@@ -5,7 +5,7 @@
 
 clock_t clock(void) {
   struct tms buf;
-  times(&buf);
+/*  times(&buf);*/
 
 /*  printf("utime %d, stime %d, CLOCKS_PER_SEC %d, HZ %d\n",buf.tms_utime,buf.tms_stime,CLOCKS_PER_SEC,HZ); */
 

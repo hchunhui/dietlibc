@@ -40,6 +40,7 @@ int initgroups(const char*user,gid_t group) {
   int n=NGROUPS_MAX;
   gid_t grouplist[NGROUPS_MAX];
   _getgrouplist(user,group,grouplist,&n);
-  return setgroups(n,grouplist);
+  return 0;
+//  return setgroups(n,grouplist);
 }
 

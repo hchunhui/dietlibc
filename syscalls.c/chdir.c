@@ -7,3 +7,9 @@ int chdir(const char *path)
 	return -1;
 }
 
+int fchdir(int fd)
+{
+	errno = EACCES;
+	return -1;
+}
+

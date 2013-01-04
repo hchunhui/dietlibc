@@ -1,6 +1,7 @@
 #include <utime.h>
 #include <syscalls.h>
 
+#ifdef __NR_utimes
 #ifndef __NR_utime
 int utime(const char *filename, const struct utimbuf *times)
 {
@@ -15,4 +16,5 @@ int utime(const char *filename, const struct utimbuf *times)
     return utimes(filename, tvs);
   }
 }
+#endif
 #endif

@@ -28,7 +28,8 @@ struct netent *getnetent(void) {
     if (netfd<0) return 0;
     fcntl (netfd, F_SETFD, FD_CLOEXEC);
     netlen=lseek(netfd,0,SEEK_END);
-    netmap=mmap(0,netlen,PROT_READ|PROT_WRITE,MAP_PRIVATE,netfd,0);
+    netmap=-1;
+    //netmap=mmap(0,netlen,PROT_READ|PROT_WRITE,MAP_PRIVATE,netfd,0);
     if ((long)netmap==(-1)) goto error;
     cur=netmap;
   }
@@ -75,7 +76,7 @@ parseerror:
   cur++;
   goto again;
 error:
-  if (netmap!=(char*)-1) munmap(netmap,netlen);
+  if (netmap!=(char*)-1) ;//munmap(netmap,netlen);
   if (netfd!=-1) close(netfd);
   netmap=(char*)-1;
   netfd=-1;
@@ -93,7 +94,7 @@ struct netent *getnetbyaddr(unsigned long net, int type) {
 }
 
 void endnetent(void) {
-  if (netmap!=(char*)-1) munmap(netmap,netlen);
+  if (netmap!=(char*)-1) ;//munmap(netmap,netlen);
   if (netfd!=-1) close(netfd);
   netmap=(char*)-1;
   netfd=-1;

@@ -26,8 +26,8 @@ static char* myrealpath(const char* file, char* dest, int count) {
     if (chdir(buf)==-1) return 0;
     file=c+1;
   }
-  if (readlink(file,buf,PATH_MAX)==0)
-    return myrealpath(buf,dest,count-1);
+  /*if (readlink(file,buf,PATH_MAX)==0)
+    return myrealpath(buf,dest,count-1);*/
   if (getcwd(dest,PATH_MAX)==0) return 0;
   i=strlen(dest); dest[i]='/'; ++i;
   for (; i<PATH_MAX-1; ++i) {

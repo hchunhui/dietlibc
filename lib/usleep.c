@@ -5,8 +5,12 @@
  * usecs * 1000 == msecs
  * msecs * 1000 = secs */
 int usleep(unsigned long usecs) {
-  struct timespec t;
-  t.tv_sec=usecs/1000000;
-  t.tv_nsec=(usecs%1000000)*1000;
-  return nanosleep(&t,&t);
+	int fd;
+	int t;
+	t = usecs/10000;
+	fd = open("/dev/timer/0", 0);
+	write(fd, &t, sizeof(t));
+	read(fd, &t, sizeof(t));
+	close(fd);
+	return 0;
 }

@@ -2,10 +2,8 @@
 #include <time.h>
 
 unsigned int sleep(unsigned int secs) {
-  struct timespec t;
-  t.tv_sec=secs;
-  t.tv_nsec=0;
-  nanosleep(&t,&t);
-  return secs-t.tv_sec;
+  int i;
+  for(i = 0; i < secs; i++)
+    usleep(1000000);
+  return 0;
 }
-
