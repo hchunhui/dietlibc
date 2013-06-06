@@ -19,41 +19,27 @@ static void _alloc_libc_free(void *ptr)
 	if(p->next != (void *)MAGIC)
 		return;
 	q = flist;
-	/* loop invariant: r && q < q+qlen {<= p < p+plen , < r} */
 	for(r = q->next; r;)
 	{
-		if(q->mem + q->len == (char *)p)
+		if(q < p && p < r)
 		{
-			q->len += p->len + sizeof(struct alloc_stru);
-			p = r;
-			r = r->next;
-			continue;
+			if(q->mem + q->len == (char *)p)
+			{
+				q->len += p->len + sizeof(struct alloc_stru);
+				p = q;
+			}
+			if(p->mem + p->len == (char *)r)
+			{
+				p->len += r->len + sizeof(struct alloc_stru);
+				r = p;
+			}
+			if(p != q && r != p)
+			{
+				p->next = q->next;
+				q->next = p;
+			}
+			break;
 		}
-		if(p->mem + p->len < (char *)r)
-		{
-			q->next = p;
-			p->next = r;
-			return;
-		}
-		if(p->mem + p->len == (char *)r)
-		{
-			r = r->next;
-		}
-		else
-		{
-			q = r;
-			r = r->next;
-		}
-	}
-	/* q < q+qlen <= p < p+plen && r == NULL */
-	if(q->mem + q->len < (char *)p)
-	{
-		q->next = p;
-		p->next = NULL;
-	}
-	else if(q->mem + q->len == (char *)p)
-	{
-		q->len += p->len + sizeof(struct alloc_stru);
 	}
 }
 
