@@ -4,6 +4,7 @@ SECTIONS
 
 	.text ALIGN(4096) :
 	{
+		KEEP(*(.text))
 		*(.text*)
 		*(.init)
 		*(.fini)
@@ -24,6 +25,7 @@ SECTIONS
 	
 	.data ALIGN(4096) :
 	{
+		KEEP(*(.data))
 		*(.data*)
 	}
 
