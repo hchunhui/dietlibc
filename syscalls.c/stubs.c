@@ -1,3 +1,4 @@
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <errno.h>
@@ -24,6 +25,11 @@ int chmod(const char *path, mode_t mode)
 	return 0;
 }
 
+int fchmod(int fd, mode_t mode)
+{
+	return 0;
+}
+
 int chown(const char *path, uid_t owner, gid_t grp)
 {
 	return 0;
@@ -42,11 +48,46 @@ int unlink(const char *name)
 	return -1;
 }
 
+int rename(const char *old, const char *new)
+{
+	errno = ENOENT;
+	return -1;
+}
+
+int symlink(const char *a, const char *b)
+{
+	errno = ENOENT;
+	return -1;
+}
+
+int mknod(const char *pathname, mode_t mode, dev_t dev)
+{
+	errno = ENOENT;
+	return -1;
+}
+
+int mkfifo(const char *pathname, mode_t mode)
+{
+        errno = ENOENT;
+        return -1;
+}
+
+int ftruncate(int fd, off_t length)
+{
+	errno = ENOENT;
+	return -1;
+}
+
+int readlink(const char *pathname, char *buf, size_t bufsiz)
+{
+	errno = ENOENT;
+	return -1;
+}
+
 int utime(const char *file, const struct utimbuf *times)
 {
 	return 0;
 }
-
 
 int uname(struct utsname *buf)
 {
@@ -56,4 +97,5 @@ int uname(struct utsname *buf)
 	strcpy(buf->version, "2");
 	strcpy(buf->machine, "i386");
 	strcpy(buf->domainname, "local");
+	return 0;
 }

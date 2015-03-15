@@ -134,3 +134,9 @@ void __libc_free(void *ptr) __attribute__((alias("_alloc_libc_free")));
 void free(void *ptr) __attribute__((weak,alias("_alloc_libc_free")));
 void if_freenameindex(void *ptr) __attribute__((alias("free")));
 
+void* __libc_calloc(size_t nmemb, size_t _size);
+void* __libc_calloc(size_t nmemb, size_t _size) {
+  register size_t size=_size*nmemb;
+  return malloc(size);
+}
+void* calloc(size_t nmemb, size_t _size) __attribute__((weak,alias("__libc_calloc")));
