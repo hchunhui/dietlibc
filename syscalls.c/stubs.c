@@ -5,6 +5,11 @@
 #include <utime.h>
 #include <sys/utsname.h>
 
+int dup(int old)
+{
+	return dup2(old, -1);
+}
+
 int access(const char *path, int mode)
 {
 	return 0;
@@ -99,3 +104,15 @@ int uname(struct utsname *buf)
 	strcpy(buf->domainname, "local");
 	return 0;
 }
+
+char *ttyname(int fd)
+{
+	errno = ENOTTY;
+	return "";
+}
+
+unsigned int alarm(unsigned int seconds)
+{
+	return seconds;
+}
+
