@@ -33,15 +33,15 @@ int select(int nfds,
 
 	n = 0;
 	for(fd = 0; fd < nfds; fd++) {
-		if(FD_ISSET(fd, rfds)) {
+		if(rfds && FD_ISSET(fd, rfds)) {
 			n++;
 			poll_set_event(poll_fd, fd, POLL_TYPE_READ);
 		}
-		if(FD_ISSET(fd, wfds)) {
+		if(wfds && FD_ISSET(fd, wfds)) {
 			n++;
 			poll_set_event(poll_fd, fd, POLL_TYPE_WRITE);
 		}
-		if(FD_ISSET(fd, efds)) {
+		if(efds && FD_ISSET(fd, efds)) {
 			n++;
 			poll_set_event(poll_fd, fd, POLL_TYPE_EXCEPT);
 		}
@@ -62,23 +62,44 @@ int select(int nfds,
 		goto clean;
 	}
 
+	for(fd = 0; fd < nfds; fd++) {
+		if(rfds && FD_ISSET(fd, rfds)) {
+			n++;
+			poll_unset_event(poll_fd, fd);
+		}
+		if(wfds && FD_ISSET(fd, wfds)) {
+			n++;
+			poll_unset_event(poll_fd, fd);
+		}
+		if(efds && FD_ISSET(fd, efds)) {
+			n++;
+			poll_unset_event(poll_fd, fd);
+		}
+	}
+	if(timer_fd != -1)
+		poll_unset_event(poll_fd, timer_fd);
+
+
 	ret = n / sizeof(struct s_poll_event);
-	FD_ZERO(rfds);
-	FD_ZERO(wfds);
-	FD_ZERO(efds);
+	if(rfds)
+		FD_ZERO(rfds);
+	if(wfds)
+		FD_ZERO(wfds);
+	if(efds)
+		FD_ZERO(efds);
 
 	for(i = 0; i < n; i++) {
 		fd = evs[i].fd;
 		if(fd == timer_fd) {
-			n--;
+			ret--;
 			continue;
 		}
-		if(evs[i].type & POLL_TYPE_READ)
+		if(rfds && (evs[i].type & POLL_TYPE_READ))
 			FD_SET(fd, rfds);
-		if(evs[i].type & POLL_TYPE_WRITE)
+		if(wfds && (evs[i].type & POLL_TYPE_WRITE))
 			FD_SET(fd, wfds);
-		if(evs[i].type & POLL_TYPE_EXCEPT)
-			FD_SET(fd, efds);
+		if(efds && evs[i].type & POLL_TYPE_EXCEPT)
+			efds && FD_SET(fd, efds);
 	}
 
 clean:
