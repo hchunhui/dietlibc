@@ -140,3 +140,20 @@ void* __libc_calloc(size_t nmemb, size_t _size) {
   return malloc(size);
 }
 void* calloc(size_t nmemb, size_t _size) __attribute__((weak,alias("__libc_calloc")));
+
+void *memalign(size_t al, size_t sz)
+{
+	// We need extra bytes to store the original value returned by malloc.
+	if (al < sizeof(void*))
+		al = sizeof(void*);
+	void* const malloc_ptr = malloc(sz + al);
+	if (!malloc_ptr)
+		return NULL;
+	// Align to the requested value, leaving room for the original malloc value.
+	void* const aligned_ptr = (void *) (((uintptr_t) malloc_ptr + al) & -al);
+
+	// Store the original malloc value where it can be found by operator delete.
+	((void **) aligned_ptr)[-1] = malloc_ptr;
+
+	return aligned_ptr;
+}
