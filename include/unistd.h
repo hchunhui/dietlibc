@@ -188,8 +188,6 @@ size_t confstr(int name,char*buf,size_t len) __THROW;
 #define _SC_NPROCESSORS_CONF _SC_NPROCESSORS_ONLN
 #define _SC_PHYS_PAGES 7
 long sysconf(int name) __THROW;
-#define _PC_PATH_MAX 1
-#define _PC_VDISABLE 2
 
 pid_t tcgetpgrp(int fd) __THROW;
 int tcsetpgrp(int fd, pid_t pgrpid) __THROW;
